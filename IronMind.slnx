@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="IronMind.API/IronMind.API.csproj" />
+  <Project Path="IronMind.Core/IronMind.Core.csproj" />
+  <Project Path="IronMind.Data/IronMind.Data.csproj" />
+  <Project Path="IronMind.Services/IronMind.Services.csproj" />
+  <Project Path="IronMind.Tests/IronMind.Tests.csproj" />
+</Solution>
