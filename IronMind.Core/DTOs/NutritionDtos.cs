@@ -4,6 +4,10 @@ public record LogMealRequest(string FoodName, float Calories,
     float? ProteinG = null, float? CarbsG = null, float? FatG = null,
     string? OpenFoodFactsId = null);
 
+public record UpdateMealRequest(string FoodName, float Calories,
+    float? ProteinG = null, float? CarbsG = null, float? FatG = null,
+    string? OpenFoodFactsId = null);
+
 public record MealLogDto(int Id, string FoodName, float Calories,
     float? ProteinG, float? CarbsG, float? FatG, DateTime LoggedAt);
 

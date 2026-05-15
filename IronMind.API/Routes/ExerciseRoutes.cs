@@ -19,6 +19,12 @@ public static class ExerciseRoutes
         group.MapGet("/history", async (IExerciseService svc, ClaimsPrincipal user, int page = 1, int pageSize = 20) =>
             Results.Ok(await svc.GetHistoryAsync(GetUserId(user), pageSize, page)));
 
+        group.MapPut("/cardio/{id:int}", async (int id, UpdateCardioRequest request, IExerciseService svc, ClaimsPrincipal user) =>
+            Results.Ok(await svc.UpdateCardioAsync(GetUserId(user), id, request)));
+
+        group.MapPut("/strength/{id:int}", async (int id, UpdateStrengthRequest request, IExerciseService svc, ClaimsPrincipal user) =>
+            Results.Ok(await svc.UpdateStrengthAsync(GetUserId(user), id, request)));
+
         group.MapDelete("/{id:int}", async (int id, IExerciseService svc, ClaimsPrincipal user) =>
         {
             await svc.DeleteWorkoutLogAsync(GetUserId(user), id);

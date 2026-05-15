@@ -1,0 +1,62 @@
+{
+  "family": "ironmind-api",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "runtimePlatform": {
+    "cpuArchitecture": "ARM64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "executionRoleArn": "arn:aws:iam::481088927864:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "ironmind-api",
+      "image": "481088927864.dkr.ecr.ca-central-1.amazonaws.com/ironmind/api:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "hostPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "ASPNETCORE_ENVIRONMENT",
+          "value": "Production"
+        },
+        {
+          "name": "ASPNETCORE_URLS",
+          "value": "http://+:8080"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "ConnectionStrings__Default",
+          "valueFrom": "arn:aws:secretsmanager:ca-central-1:481088927864:secret:ironmind/prod/connection-string-TjGfzi"
+        },
+        {
+          "name": "Jwt__Secret",
+          "valueFrom": "arn:aws:secretsmanager:ca-central-1:481088927864:secret:ironmind/prod/jwt-secret-BA0l9D"
+        },
+        {
+          "name": "Jwt__Issuer",
+          "valueFrom": "arn:aws:secretsmanager:ca-central-1:481088927864:secret:ironmind/prod/jwt-issuer-lYHXGz"
+        },
+        {
+          "name": "Jwt__Audience",
+          "valueFrom": "arn:aws:secretsmanager:ca-central-1:481088927864:secret:ironmind/prod/jwt-audience-U3hesY"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ironmind-api",
+          "awslogs-region": "ca-central-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

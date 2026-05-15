@@ -1,10 +1,10 @@
-﻿namespace IronMind.Tests;
+namespace IronMind.Tests;
 
 public class UnitTest1
 {
     [Fact]
-    public void Test1()
+    public void TestProject_IsConfigured()
     {
-
+        Assert.True(true);
     }
 }

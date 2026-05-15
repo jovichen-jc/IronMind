@@ -16,6 +16,9 @@ public static class NutritionRoutes
         group.MapGet("/meals/summary", async (DateOnly? date, INutritionService svc, ClaimsPrincipal user) =>
             Results.Ok(await svc.GetDailySummaryAsync(GetUserId(user), date ?? DateOnly.FromDateTime(DateTime.UtcNow))));
 
+        group.MapPut("/meals/{id:int}", async (int id, UpdateMealRequest request, INutritionService svc, ClaimsPrincipal user) =>
+            Results.Ok(await svc.UpdateMealLogAsync(GetUserId(user), id, request)));
+
         group.MapDelete("/meals/{id:int}", async (int id, INutritionService svc, ClaimsPrincipal user) =>
         {
             await svc.DeleteMealLogAsync(GetUserId(user), id);

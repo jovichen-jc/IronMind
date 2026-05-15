@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:17
+    container_name: ironmind-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ironmind_dev
+      POSTGRES_USER: ironmind
+      POSTGRES_PASSWORD: ironmind_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - ironmind-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ironmind -d ironmind_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: IronMind.API/Dockerfile
+    container_name: ironmind-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Default: Host=db;Port=5432;Database=ironmind_dev;Username=ironmind;Password=ironmind_password
+      Jwt__Secret: DEV_ONLY_DOCKER_super_secret_key_32chars!!
+      Jwt__Issuer: IronMind
+      Jwt__Audience: IronMind
+    ports:
+      - "5235:8080"
+
+volumes:
+  ironmind-postgres-data:
