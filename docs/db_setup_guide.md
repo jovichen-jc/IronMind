@@ -91,7 +91,7 @@ Paste this content into the file, then fill in your own values:
     }
   },
   "ConnectionStrings": {
-    "Default": "Host=localhost;Database=ironmind_dev;Username=YOUR_USERNAME;Password=YOUR_PASSWORD"
+    "Default": "Host=localhost;Port=5432;Database=ironmind_dev;Username=YOUR_USERNAME;Password=YOUR_PASSWORD"
   },
   "Jwt": {
     "Secret": "DEV_ONLY_CHANGE_IN_PROD_super_secret_key_32chars!!",
@@ -100,6 +100,8 @@ Paste this content into the file, then fill in your own values:
   }
 }
 ```
+
+PostgreSQL runs on port **5432** by default. If you've configured PostgreSQL on a different port, update the `Port` value in the connection string above.
 
 ### Finding your username and password
 
