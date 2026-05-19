@@ -34,6 +34,13 @@ builder.Services.AddScoped<IHydrationService, HydrationService>();
 builder.Services.AddSingleton<INotificationService, FcmNotificationService>();
 builder.Services.AddHostedService<ReminderBackgroundService>();
 
+builder.Services.AddHttpClient("OpenFoodFacts", client =>
+{
+    client.BaseAddress = new Uri("https://world.openfoodfacts.org/");
+    client.DefaultRequestHeaders.Add("User-Agent", "IronMind/1.0 (school project)");
+    client.Timeout = TimeSpan.FromSeconds(5);
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
