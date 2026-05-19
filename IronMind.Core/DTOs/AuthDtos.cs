@@ -9,3 +9,23 @@ public record RegisterRequest(string Email, string Password, string Name, DateOn
 public record LoginRequest(string Email, string Password);
 
 public record AuthResult(bool Success, string? Token, string? Error);
+
+public record UserProfileDto(
+    int Id,
+    string Email,
+    string Name,
+    DateOnly DateOfBirth,
+    float Weight,
+    float Height,
+    string Units,
+    float DailyCalorieGoal,
+    float DailyWaterGoal,
+    string? DeviceToken);
+
+public record UpdateProfileRequest(
+    string? Name = null,
+    float? WeightKg = null,
+    float? HeightCm = null,
+    UnitPreference? Units = null,
+    float? DailyCalorieGoal = null,
+    float? DailyWaterGoalMl = null);

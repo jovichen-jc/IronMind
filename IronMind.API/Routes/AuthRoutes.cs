@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using IronMind.Core.DTOs;
 using IronMind.Core.Interfaces;
 
@@ -20,5 +21,20 @@ public static class AuthRoutes
             var result = await auth.LoginAsync(request);
             return result.Success ? Results.Ok(result) : Results.Unauthorized();
         });
+
+        group.MapGet("/profile", async (IAuthService auth, ClaimsPrincipal user) =>
+        {
+            var profile = await auth.GetProfileAsync(GetUserId(user));
+            return profile is null ? Results.NotFound() : Results.Ok(profile);
+        }).RequireAuthorization();
+
+        group.MapPut("/profile", async (UpdateProfileRequest request, IAuthService auth, ClaimsPrincipal user) =>
+        {
+            var profile = await auth.UpdateProfileAsync(GetUserId(user), request);
+            return profile is null ? Results.NotFound() : Results.Ok(profile);
+        }).RequireAuthorization();
     }
+
+    private static int GetUserId(ClaimsPrincipal user) =>
+        int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
 }
