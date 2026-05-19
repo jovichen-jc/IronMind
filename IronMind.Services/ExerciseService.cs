@@ -10,6 +10,9 @@ public class ExerciseService(AppDbContext db) : IExerciseService
 {
     public async Task<WorkoutLogDto> LogCardioAsync(int userId, LogCardioRequest request)
     {
+        var user = await db.Users.FindAsync(userId)
+            ?? throw new KeyNotFoundException("User not found.");
+
         var log = new WorkoutLog
         {
             UserId = userId,
@@ -20,7 +23,7 @@ public class ExerciseService(AppDbContext db) : IExerciseService
                 ActivityType = request.ActivityType,
                 DurationMinutes = request.DurationMinutes,
                 DistanceKm = request.DistanceKm,
-                CaloriesBurned = EstimateCalories(request.DurationMinutes)
+                CaloriesBurned = EstimateCalories(request.ActivityType, request.DurationMinutes, user.WeightKg)
             }
         };
         db.WorkoutLogs.Add(log);
@@ -69,8 +72,24 @@ public class ExerciseService(AppDbContext db) : IExerciseService
         await db.SaveChangesAsync();
     }
 
-    // TODO (Dev 3 — Week 3): replace with MET-based formula per activity type
-    private static float EstimateCalories(int durationMinutes) => durationMinutes * 8f;
+    private static readonly Dictionary<string, float> MetValues = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["running"]    = 9.8f,
+        ["cycling"]    = 7.5f,
+        ["swimming"]   = 8.0f,
+        ["walking"]    = 3.5f,
+        ["rowing"]     = 7.0f,
+        ["elliptical"] = 5.0f,
+    };
+
+    private static float GetMet(string activityType) =>
+        MetValues.TryGetValue(activityType.Trim(), out var met) ? met : 6.0f;
+
+    private static float EstimateCalories(string activityType, int durationMinutes, float weightKg)
+    {
+        var met = GetMet(activityType);
+        return MathF.Round(met * weightKg * (durationMinutes / 60f), 1);
+    }
 
     private static WorkoutLogDto ToDto(WorkoutLog w) => new(
         w.Id, w.Type, w.LoggedAt, w.Notes,
