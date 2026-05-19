@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using IronMind.Core.DTOs;
 using IronMind.Core.Interfaces;
+using IronMind.Data;
 
 namespace IronMind.API.Routes;
 
@@ -20,5 +22,15 @@ public static class AuthRoutes
             var result = await auth.LoginAsync(request);
             return result.Success ? Results.Ok(result) : Results.Unauthorized();
         });
+
+        group.MapPatch("/device-token", async (DeviceTokenRequest request, AppDbContext db, ClaimsPrincipal user) =>
+        {
+            var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var u = await db.Users.FindAsync(userId);
+            if (u is null) return Results.NotFound();
+            u.DeviceToken = request.Token;
+            await db.SaveChangesAsync();
+            return Results.NoContent();
+        }).RequireAuthorization();
     }
 }

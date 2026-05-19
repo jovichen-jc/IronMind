@@ -18,4 +18,5 @@ public class ReminderSchedule
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
     public bool IsActive { get; set; } = true;
+    public DateTime? LastNotifiedAt { get; set; }
 }

@@ -9,3 +9,5 @@ public record RegisterRequest(string Email, string Password, string Name, DateOn
 public record LoginRequest(string Email, string Password);
 
 public record AuthResult(bool Success, string? Token, string? Error);
+
+public record DeviceTokenRequest(string Token);

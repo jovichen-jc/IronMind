@@ -31,6 +31,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INutritionService, NutritionService>();
 builder.Services.AddScoped<IExerciseService, ExerciseService>();
 builder.Services.AddScoped<IHydrationService, HydrationService>();
+builder.Services.AddSingleton<INotificationService, FcmNotificationService>();
+builder.Services.AddHostedService<ReminderBackgroundService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
