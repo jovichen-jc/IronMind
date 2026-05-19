@@ -23,14 +23,28 @@ public static class AuthRoutes
             return result.Success ? Results.Ok(result) : Results.Unauthorized();
         });
 
+        group.MapGet("/profile", async (IAuthService auth, ClaimsPrincipal user) =>
+        {
+            var profile = await auth.GetProfileAsync(GetUserId(user));
+            return profile is null ? Results.NotFound() : Results.Ok(profile);
+        }).RequireAuthorization();
+
+        group.MapPut("/profile", async (UpdateProfileRequest request, IAuthService auth, ClaimsPrincipal user) =>
+        {
+            var profile = await auth.UpdateProfileAsync(GetUserId(user), request);
+            return profile is null ? Results.NotFound() : Results.Ok(profile);
+        }).RequireAuthorization();
+
         group.MapPatch("/device-token", async (DeviceTokenRequest request, AppDbContext db, ClaimsPrincipal user) =>
         {
-            var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var u = await db.Users.FindAsync(userId);
+            var u = await db.Users.FindAsync(GetUserId(user));
             if (u is null) return Results.NotFound();
             u.DeviceToken = request.Token;
             await db.SaveChangesAsync();
             return Results.NoContent();
         }).RequireAuthorization();
     }
+
+    private static int GetUserId(ClaimsPrincipal user) =>
+        int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
 }
