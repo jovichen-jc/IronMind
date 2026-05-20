@@ -1,0 +1,306 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.lab{padding:1.5rem 0}
+.hero{background:#26215C;border-radius:var(--border-radius-lg);padding:1.75rem 2rem 1.5rem;margin-bottom:1.25rem;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;top:-30px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,0.04)}
+.hero-title{font-size:26px;font-weight:500;color:#EEEDFE;letter-spacing:-0.4px}
+.hero-sub{font-size:12px;color:#AFA9EC;margin-top:3px}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:1rem}
+.pill{font-size:11px;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,0.09);color:#CECBF6;border:0.5px solid rgba(255,255,255,0.14)}
+.nav{display:flex;gap:2px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.1rem}
+.tab{font-size:12px;padding:7px 12px;border:none;background:transparent;color:var(--color-text-secondary);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-0.5px;font-family:var(--font-sans)}
+.tab.on{color:#534AB7;border-bottom-color:#534AB7;font-weight:500}
+.tab:hover:not(.on){color:var(--color-text-primary)}
+.panel{display:none}.panel.on{display:block}
+.lbl{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-tertiary);margin-bottom:8px;margin-top:14px}
+.lbl:first-child{margin-top:0}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:.875rem 1.1rem;margin-bottom:10px}
+.ep{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px}
+.ep:last-child{border-bottom:none}
+.method{font-family:var(--font-mono);font-size:10px;font-weight:500;padding:2px 7px;border-radius:var(--border-radius-md);min-width:48px;text-align:center}
+.get{background:#EAF3DE;color:#27500A}.post{background:#E6F1FB;color:#0C447C}
+.del{background:#FCEBEB;color:#791F1F}.patch{background:#FAEEDA;color:#633806}
+.route{font-family:var(--font-mono);font-size:11px;color:var(--color-text-secondary);flex:1}
+.badge{font-size:10px;padding:2px 6px;border-radius:999px;border:0.5px solid}
+.jwt{background:#EEEDFE;color:#534AB7;border-color:#AFA9EC}
+.pub{background:var(--color-background-secondary);color:var(--color-text-tertiary);border-color:var(--color-border-tertiary)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.1rem}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px;text-align:center}
+.snum{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.slbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.arch{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--border-radius-md);margin-bottom:7px;font-size:12px}
+.aico{width:28px;height:28px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.aname{font-weight:500;color:var(--color-text-primary);font-size:13px}
+.adesc{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.arr{text-align:center;font-size:14px;color:var(--color-text-tertiary);margin:2px 0 4px}
+.sdlc-row{display:flex;gap:8px;margin-bottom:8px}
+.sdlc-card{flex:1;border-radius:var(--border-radius-md);padding:9px 11px;border:0.5px solid var(--color-border-tertiary)}
+.sdlc-title{font-size:11px;font-weight:500;color:var(--color-text-primary);margin-bottom:5px}
+.sdlc-item{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px;display:flex;align-items:flex-start;gap:5px}
+.sdlc-item::before{content:'·';flex-shrink:0}
+.done{color:var(--color-text-success)}.done::before{content:'✓';flex-shrink:0}
+.todo{color:var(--color-text-secondary)}.todo::before{content:'○';flex-shrink:0;color:var(--color-text-tertiary)}
+.artefact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.art-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:9px 11px;cursor:pointer;transition:background 0.15s}
+.art-card:hover{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary)}
+.art-name{font-size:12px;font-weight:500;color:var(--color-text-primary)}
+.art-type{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.try-btn{font-size:11px;padding:5px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-primary);cursor:pointer;font-family:var(--font-sans);margin-top:8px;margin-right:6px}
+.try-btn:hover{background:var(--color-background-secondary)}
+.vol-out{background:#EEEDFE;border-radius:var(--border-radius-md);padding:10px 14px;margin-top:8px}
+.vol-num{font-size:20px;font-weight:500;color:#26215C}
+.vol-eq{font-size:11px;color:#534AB7;margin-top:2px}
+.strength-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.input-grp label{font-size:11px;color:var(--color-text-secondary);display:block;margin-bottom:3px}
+.input-grp input{width:100%;font-size:12px}
+pre#json-preview{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px;font-size:11px;font-family:var(--font-mono);color:var(--color-text-primary);white-space:pre-wrap;margin-top:8px}
+</style>
+
+<div class="lab">
+  <h2 class="sr-only">IronMind — fitness API project reference lab covering SDLC, architecture, endpoints, models, and a strength volume calculator.</h2>
+
+  <div class="hero">
+    <div class="hero-title">IronMind</div>
+    <div class="hero-sub">ASP.NET Core 10 Minimal API · PostgreSQL · EF Core · JWT · BCrypt</div>
+    <div class="pills">
+      <span class="pill">Nutrition tracking</span>
+      <span class="pill">Hydration + reminders</span>
+      <span class="pill">Strength training</span>
+      <span class="pill">Cardio logging</span>
+      <span class="pill">JWT auth</span>
+      <span class="pill">Entity Framework Core</span>
+      <span class="pill">Swagger UI</span>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="tab on" onclick="show('overview',this)">Overview</button>
+    <button class="tab" onclick="show('sdlc',this)">SDLC</button>
+    <button class="tab" onclick="show('endpoints',this)">Endpoints</button>
+    <button class="tab" onclick="show('models',this)">Models</button>
+    <button class="tab" onclick="show('artefacts',this)">Artefacts</button>
+    <button class="tab" onclick="show('strength',this)">Strength calc</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="panel-overview" class="panel on">
+    <div class="stats">
+      <div class="stat"><div class="snum">14</div><div class="slbl">Endpoints</div></div>
+      <div class="stat"><div class="snum">5</div><div class="slbl">Projects</div></div>
+      <div class="stat"><div class="snum">6</div><div class="slbl">DB tables</div></div>
+    </div>
+    <div class="lbl">Solution architecture</div>
+    <div class="arch" style="background:#EEEDFE">
+      <div class="aico" style="background:#AFA9EC">🌐</div>
+      <div><div class="aname">IronMind.API</div><div class="adesc">Routes, middleware, JWT config, Swagger — Program.cs only</div></div>
+    </div>
+    <div class="arr">↓</div>
+    <div class="arch" style="background:#E6F1FB">
+      <div class="aico" style="background:#85B7EB">⚙️</div>
+      <div><div class="aname">IronMind.Services</div><div class="adesc">Business logic — Auth, Nutrition, Hydration, Exercise</div></div>
+    </div>
+    <div class="arr">↓</div>
+    <div class="arch" style="background:#EAF3DE">
+      <div class="aico" style="background:#97C459">🗄️</div>
+      <div><div class="aname">IronMind.Data</div><div class="adesc">AppDbContext, EF Core migrations, PostgreSQL</div></div>
+    </div>
+    <div class="arr">↓</div>
+    <div class="arch" style="background:#F1EFE8">
+      <div class="aico" style="background:#B4B2A9">📦</div>
+      <div><div class="aname">IronMind.Core</div><div class="adesc">Models, DTOs, interfaces — no dependencies</div></div>
+    </div>
+    <button class="try-btn" onclick="sendPrompt('How does Program.cs wire up all services and routes in IronMind?')">How does Program.cs work? ↗</button>
+  </div>
+
+  <!-- SDLC -->
+  <div id="panel-sdlc" class="panel">
+    <div class="lbl">SDLC phase — IronMind mapping</div>
+    <div class="card" style="font-size:12px;color:var(--color-text-secondary);line-height:1.6">
+      The SDLC defines the phases a software project moves through from idea to delivery. IronMind maps to each phase across its three-week sprint cycle.
+    </div>
+    <div class="sdlc-row">
+      <div class="sdlc-card" style="border-top:2px solid #534AB7">
+        <div class="sdlc-title">Requirements gathering</div>
+        <div class="sdlc-item done">Functional requirements (FR-01 to FR-27)</div>
+        <div class="sdlc-item done">Non-functional requirements (NFR-01 to NFR-24)</div>
+        <div class="sdlc-item done">Stakeholder + actor identification</div>
+      </div>
+      <div class="sdlc-card" style="border-top:2px solid #0F6E56">
+        <div class="sdlc-title">Functional specifications</div>
+        <div class="sdlc-item done">Use case diagram</div>
+        <div class="sdlc-item done">Activity diagram</div>
+        <div class="sdlc-item done">Sequence diagram</div>
+      </div>
+    </div>
+    <div class="sdlc-row">
+      <div class="sdlc-card" style="border-top:2px solid #185FA5">
+        <div class="sdlc-title">Architecture + design</div>
+        <div class="sdlc-item done">Class diagram</div>
+        <div class="sdlc-item done">ER diagram</div>
+        <div class="sdlc-item done">5-project solution structure</div>
+      </div>
+      <div class="sdlc-card" style="border-top:2px solid #854F0B">
+        <div class="sdlc-title">Implementation</div>
+        <div class="sdlc-item done">Auth, Nutrition, Hydration</div>
+        <div class="sdlc-item done">Exercise (cardio + strength)</div>
+        <div class="sdlc-item todo">MET calorie formula</div>
+        <div class="sdlc-item todo">Open Food Facts search</div>
+        <div class="sdlc-item todo">FCM push notifications</div>
+      </div>
+    </div>
+    <div class="sdlc-row">
+      <div class="sdlc-card" style="border-top:2px solid #3B6D11">
+        <div class="sdlc-title">Testing + QA</div>
+        <div class="sdlc-item todo">xUnit test suite (Week 3)</div>
+        <div class="sdlc-item todo">Integration testing (Week 3)</div>
+      </div>
+      <div class="sdlc-card" style="border-top:2px solid #888780">
+        <div class="sdlc-title">Documentation + release</div>
+        <div class="sdlc-item done">Step-by-step build guide</div>
+        <div class="sdlc-item done">Requirements report (.docx)</div>
+        <div class="sdlc-item todo">Final review + submission</div>
+      </div>
+    </div>
+    <button class="try-btn" onclick="sendPrompt('What is the SDLC and how does each phase apply to IronMind?')">Explain each SDLC phase ↗</button>
+  </div>
+
+  <!-- ENDPOINTS -->
+  <div id="panel-endpoints" class="panel">
+    <div class="lbl">Auth</div>
+    <div class="card">
+      <div class="ep"><span class="method post">POST</span><span class="route">/auth/register</span><span class="badge pub">public</span></div>
+      <div class="ep"><span class="method post">POST</span><span class="route">/auth/login</span><span class="badge pub">public</span></div>
+    </div>
+    <div class="lbl">Nutrition</div>
+    <div class="card">
+      <div class="ep"><span class="method post">POST</span><span class="route">/nutrition/log</span><span class="badge jwt">JWT</span></div>
+      <div class="ep"><span class="method get">GET</span><span class="route">/nutrition/summary</span><span class="badge jwt">JWT</span></div>
+      <div class="ep"><span class="method get">GET</span><span class="route">/nutrition/logs</span><span class="badge jwt">JWT</span></div>
+      <div class="ep"><span class="method del">DELETE</span><span class="route">/nutrition/log/{id}</span><span class="badge jwt">JWT</span></div>
+    </div>
+    <div class="lbl">Hydration</div>
+    <div class="card">
+      <div class="ep"><span class="method post">POST</span><span class="route">/hydration/log</span><span class="badge jwt">JWT</span></div>
+      <div class="ep"><span class="method get">GET</span><span class="route">/hydration/summary</span><span class="badge jwt">JWT</span></div>
+      <div class="ep"><span class="method post">POST</span><span class="route">/hydration/reminder</span><span class="badge jwt">JWT</span></div>
+      <div class="ep"><span class="method patch">PATCH</span><span class="route">/hydration/reminder/{id}/toggle</span><span class="badge jwt">JWT</span></div>
+    </div>
+    <div class="lbl">Exercise</div>
+    <div class="card">
+      <div class="ep"><span class="method post">POST</span><span class="route">/exercise/cardio</span><span class="badge jwt">JWT</span></div>
+      <div class="ep"><span class="method post">POST</span><span class="route">/exercise/strength</span><span class="badge jwt">JWT</span></div>
+      <div class="ep"><span class="method get">GET</span><span class="route">/exercise/history</span><span class="badge jwt">JWT</span></div>
+      <div class="ep"><span class="method del">DELETE</span><span class="route">/exercise/log/{id}</span><span class="badge jwt">JWT</span></div>
+    </div>
+    <button class="try-btn" onclick="sendPrompt('Show me example JSON request bodies for all IronMind endpoints')">Show request bodies ↗</button>
+  </div>
+
+  <!-- MODELS -->
+  <div id="panel-models" class="panel">
+    <div class="lbl">Core entities — three-section UML format</div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:500;color:#534AB7;padding-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:6px">User</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);padding-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:6px;font-family:var(--font-mono)">+Id: int · +Username: string · +Email: string (unique) · +PasswordHash: string · +CreatedAt: DateTime</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);font-family:var(--font-mono)">Navigation: MealLogs · WaterLogs · WaterReminders · CardioLogs · StrengthLogs</div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:500;color:#0F6E56;padding-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:6px">MealLog</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);font-family:var(--font-mono);padding-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:6px">+Id · +UserId (FK) · +FoodName · +MealType · +Calories · +ProteinG · +CarbsG · +FatG · +ServingG · +LoggedAt</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);font-family:var(--font-mono)">All numeric fields stored in metric units</div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:500;color:#993C1D;padding-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:6px">StrengthLog</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);font-family:var(--font-mono);padding-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:6px">+Id · +UserId (FK) · +ExerciseName · +MuscleGroup · +Sets · +Reps · +WeightKg · +Notes · +LoggedAt</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);font-family:var(--font-mono)">Validated: Sets &gt; 0 AND Reps &gt; 0</div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:500;color:#185FA5;padding-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:6px">WaterReminder</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);font-family:var(--font-mono);padding-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:6px">+Id · +UserId (FK) · +ReminderTime: TimeOnly · +Label: string · +IsActive: bool</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);font-family:var(--font-mono)">Toggled via PATCH — partial update, not full replace</div>
+    </div>
+    <button class="try-btn" onclick="sendPrompt('Explain how EF Core migrations are generated from these models in IronMind')">How do migrations work? ↗</button>
+  </div>
+
+  <!-- ARTEFACTS -->
+  <div id="panel-artefacts" class="panel">
+    <div class="lbl">Documentation artefacts produced</div>
+    <div class="artefact-grid">
+      <div class="art-card" onclick="sendPrompt('Rebuild the IronMind use case diagram')">
+        <div class="art-name">Use case diagram</div>
+        <div class="art-type">UML · actors, system boundary, «include», «extend»</div>
+      </div>
+      <div class="art-card" onclick="sendPrompt('Rebuild the IronMind class diagram')">
+        <div class="art-name">Class diagram</div>
+        <div class="art-type">UML · 3-section format, interfaces, relationships</div>
+      </div>
+      <div class="art-card" onclick="sendPrompt('Rebuild the IronMind ER diagram')">
+        <div class="art-name">ER diagram</div>
+        <div class="art-type">Entity-relationship · crow's-foot notation</div>
+      </div>
+      <div class="art-card" onclick="sendPrompt('Rebuild the IronMind activity diagram')">
+        <div class="art-name">Activity diagram</div>
+        <div class="art-type">UML · swimlanes, decision nodes, fork/join</div>
+      </div>
+      <div class="art-card" onclick="sendPrompt('Rebuild the IronMind sequence diagram')">
+        <div class="art-name">Sequence diagram</div>
+        <div class="art-type">UML · lifelines, sync/async messages, error paths</div>
+      </div>
+      <div class="art-card" onclick="sendPrompt('Rebuild the IronMind functional and non-functional requirements report as a Word document')">
+        <div class="art-name">Requirements report</div>
+        <div class="art-type">.docx · FR + NFR tables, endpoint summary</div>
+      </div>
+    </div>
+    <div class="lbl" style="margin-top:12px">Functional vs non-functional</div>
+    <div class="card" style="font-size:12px;color:var(--color-text-secondary);line-height:1.6">
+      <span style="color:var(--color-text-primary);font-weight:500">Functional</span> — what the system does: log a meal, return a summary, toggle a reminder. If not met, the system does not work.<br><br>
+      <span style="color:var(--color-text-primary);font-weight:500">Non-functional</span> — how well it does it: response time under 500ms, BCrypt password hashing, JWT expiry, parameterised SQL queries.
+    </div>
+    <button class="try-btn" onclick="sendPrompt('What is the difference between functional and non-functional requirements with examples from IronMind?')">Explain with IronMind examples ↗</button>
+  </div>
+
+  <!-- STRENGTH CALC -->
+  <div id="panel-strength" class="panel">
+    <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px">Live preview of the exact JSON payload POST /exercise/strength expects, with total volume calculated.</p>
+    <div class="strength-grid">
+      <div class="input-grp"><label>Exercise name</label><input type="text" id="s-name" value="Bench Press" oninput="calc()"/></div>
+      <div class="input-grp"><label>Muscle group</label><input type="text" id="s-muscle" value="Chest" oninput="calc()"/></div>
+      <div class="input-grp"><label>Sets</label><input type="number" id="s-sets" value="4" min="1" max="20" oninput="calc()"/></div>
+      <div class="input-grp"><label>Reps per set</label><input type="number" id="s-reps" value="8" min="1" max="50" oninput="calc()"/></div>
+      <div class="input-grp"><label>Weight (kg)</label><input type="number" id="s-weight" value="80" min="0" step="2.5" oninput="calc()"/></div>
+      <div class="input-grp"><label>Notes</label><input type="text" id="s-notes" value="Felt strong" oninput="calc()"/></div>
+    </div>
+    <div class="vol-out">
+      <div style="font-size:11px;color:#534AB7">Total volume lifted</div>
+      <div class="vol-num" id="vol">2,560 kg</div>
+      <div class="vol-eq" id="vol-eq">4 sets × 8 reps × 80 kg</div>
+    </div>
+    <pre id="json-preview"></pre>
+    <button class="try-btn" onclick="sendPrompt('How does ExerciseService.LogStrengthAsync validate and store this payload in PostgreSQL?')">How is this stored? ↗</button>
+  </div>
+</div>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('panel-' + id).classList.add('on');
+  btn.classList.add('on');
+}
+function calc() {
+  var sets   = parseInt(document.getElementById('s-sets').value)   || 0;
+  var reps   = parseInt(document.getElementById('s-reps').value)   || 0;
+  var weight = parseFloat(document.getElementById('s-weight').value) || 0;
+  var name   = document.getElementById('s-name').value;
+  var muscle = document.getElementById('s-muscle').value;
+  var notes  = document.getElementById('s-notes').value;
+  var vol = sets * reps * weight;
+  document.getElementById('vol').textContent = vol.toLocaleString() + ' kg';
+  document.getElementById('vol-eq').textContent = sets + ' sets × ' + reps + ' reps × ' + weight + ' kg';
+  document.getElementById('json-preview').textContent = JSON.stringify({
+    exerciseName: name, muscleGroup: muscle,
+    sets: sets, reps: reps, weightKg: weight, notes: notes
+  }, null, 2);
+}
+calc();
+</script>

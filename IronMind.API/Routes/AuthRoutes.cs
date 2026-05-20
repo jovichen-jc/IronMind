@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using IronMind.Core.DTOs;
 using IronMind.Core.Interfaces;
 using IronMind.Data;
@@ -23,28 +22,25 @@ public static class AuthRoutes
             return result.Success ? Results.Ok(result) : Results.Unauthorized();
         });
 
-        group.MapGet("/profile", async (IAuthService auth, ClaimsPrincipal user) =>
+        group.MapGet("/profile", async (IAuthService auth, System.Security.Claims.ClaimsPrincipal user) =>
         {
-            var profile = await auth.GetProfileAsync(GetUserId(user));
+            var profile = await auth.GetProfileAsync(user.GetUserId());
             return profile is null ? Results.NotFound() : Results.Ok(profile);
         }).RequireAuthorization();
 
-        group.MapPut("/profile", async (UpdateProfileRequest request, IAuthService auth, ClaimsPrincipal user) =>
+        group.MapPut("/profile", async (UpdateProfileRequest request, IAuthService auth, System.Security.Claims.ClaimsPrincipal user) =>
         {
-            var profile = await auth.UpdateProfileAsync(GetUserId(user), request);
+            var profile = await auth.UpdateProfileAsync(user.GetUserId(), request);
             return profile is null ? Results.NotFound() : Results.Ok(profile);
         }).RequireAuthorization();
 
-        group.MapPatch("/device-token", async (DeviceTokenRequest request, AppDbContext db, ClaimsPrincipal user) =>
+        group.MapPatch("/device-token", async (DeviceTokenRequest request, AppDbContext db, System.Security.Claims.ClaimsPrincipal user) =>
         {
-            var u = await db.Users.FindAsync(GetUserId(user));
+            var u = await db.Users.FindAsync(user.GetUserId());
             if (u is null) return Results.NotFound();
             u.DeviceToken = request.Token;
             await db.SaveChangesAsync();
             return Results.NoContent();
         }).RequireAuthorization();
     }
-
-    private static int GetUserId(ClaimsPrincipal user) =>
-        int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
 }

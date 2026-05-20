@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using IronMind.Core.DTOs;
 using IronMind.Core.Interfaces;
 
@@ -10,22 +9,22 @@ public static class NutritionRoutes
     {
         var group = app.MapGroup("/nutrition").WithTags("Nutrition").RequireAuthorization();
 
-        group.MapPost("/meals", async (LogMealRequest request, INutritionService svc, ClaimsPrincipal user) =>
-            Results.Ok(await svc.LogMealAsync(GetUserId(user), request)));
+        group.MapPost("/meals", async (LogMealRequest request, INutritionService svc, System.Security.Claims.ClaimsPrincipal user) =>
+            Results.Ok(await svc.LogMealAsync(user.GetUserId(), request)));
 
-        group.MapGet("/meals/summary", async (DateOnly? date, INutritionService svc, ClaimsPrincipal user) =>
-            Results.Ok(await svc.GetDailySummaryAsync(GetUserId(user), date ?? DateOnly.FromDateTime(DateTime.UtcNow))));
+        group.MapGet("/meals", async (DateOnly? date, INutritionService svc, System.Security.Claims.ClaimsPrincipal user) =>
+            Results.Ok(await svc.GetMealLogsAsync(user.GetUserId(), date ?? DateOnly.FromDateTime(DateTime.UtcNow))));
 
-        group.MapDelete("/meals/{id:int}", async (int id, INutritionService svc, ClaimsPrincipal user) =>
+        group.MapGet("/meals/summary", async (DateOnly? date, INutritionService svc, System.Security.Claims.ClaimsPrincipal user) =>
+            Results.Ok(await svc.GetDailySummaryAsync(user.GetUserId(), date ?? DateOnly.FromDateTime(DateTime.UtcNow))));
+
+        group.MapDelete("/meals/{id:int}", async (int id, INutritionService svc, System.Security.Claims.ClaimsPrincipal user) =>
         {
-            await svc.DeleteMealLogAsync(GetUserId(user), id);
+            await svc.DeleteMealLogAsync(user.GetUserId(), id);
             return Results.NoContent();
         });
 
         group.MapGet("/food/search", async (string q, INutritionService svc) =>
             Results.Ok(await svc.SearchFoodAsync(q)));
     }
-
-    private static int GetUserId(ClaimsPrincipal user) =>
-        int.Parse(user.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier)!);
 }

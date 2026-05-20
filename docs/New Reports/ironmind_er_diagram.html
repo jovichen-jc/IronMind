@@ -1,0 +1,125 @@
+
+<style>
+#erd-wrap { padding: 0.5rem 0; }
+#erd-wrap svg { max-width: 100%; }
+</style>
+<div id="erd-wrap"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '12px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#888780',
+    textColor: dark ? '#c2c0b6' : '#2C2C2A',
+    primaryColor: dark ? '#3C3489' : '#EEEDFE',
+    primaryTextColor: dark ? '#CECBF6' : '#26215C',
+    primaryBorderColor: dark ? '#7F77DD' : '#534AB7',
+    secondaryColor: dark ? '#085041' : '#E1F5EE',
+    secondaryTextColor: dark ? '#9FE1CB' : '#04342C',
+    secondaryBorderColor: dark ? '#1D9E75' : '#0F6E56',
+    tertiaryColor: dark ? '#412402' : '#FAEEDA',
+    tertiaryTextColor: dark ? '#FAC775' : '#412402',
+    tertiaryBorderColor: dark ? '#BA7517' : '#854F0B',
+  },
+});
+
+const diagram = `erDiagram
+  USER {
+    int Id PK
+    string Username
+    string Email UK
+    string PasswordHash
+    datetime CreatedAt
+  }
+
+  MEAL_LOG {
+    int Id PK
+    int UserId FK
+    string FoodName
+    string MealType
+    double Calories
+    double ProteinG
+    double CarbsG
+    double FatG
+    double ServingG
+    datetime LoggedAt
+  }
+
+  WATER_LOG {
+    int Id PK
+    int UserId FK
+    double AmountMl
+    datetime LoggedAt
+  }
+
+  WATER_REMINDER {
+    int Id PK
+    int UserId FK
+    time ReminderTime
+    string Label
+    bool IsActive
+  }
+
+  CARDIO_LOG {
+    int Id PK
+    int UserId FK
+    string ActivityType
+    int DurationMin
+    double DistanceKm
+    double CaloriesBurned
+    datetime LoggedAt
+  }
+
+  STRENGTH_LOG {
+    int Id PK
+    int UserId FK
+    string ExerciseName
+    string MuscleGroup
+    int Sets
+    int Reps
+    double WeightKg
+    string Notes
+    datetime LoggedAt
+  }
+
+  USER ||--o{ MEAL_LOG : "logs"
+  USER ||--o{ WATER_LOG : "logs"
+  USER ||--o{ WATER_REMINDER : "sets"
+  USER ||--o{ CARDIO_LOG : "logs"
+  USER ||--o{ STRENGTH_LOG : "logs"
+`;
+
+const { svg } = await mermaid.render('erd-inner', diagram);
+document.getElementById('erd-wrap').innerHTML = svg;
+
+document.querySelectorAll('#erd-wrap svg .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill','stroke','stroke-width','class','style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+
+document.querySelectorAll('#erd-wrap svg .row-rect-odd path, #erd-wrap svg .row-rect-even path').forEach(p => {
+  p.setAttribute('stroke', 'none');
+});
+</script>

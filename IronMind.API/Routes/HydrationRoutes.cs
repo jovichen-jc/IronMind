@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using IronMind.Core.DTOs;
 using IronMind.Core.Interfaces;
 
@@ -10,19 +9,16 @@ public static class HydrationRoutes
     {
         var group = app.MapGroup("/hydration").WithTags("Hydration").RequireAuthorization();
 
-        group.MapPost("/water", async (LogWaterRequest request, IHydrationService svc, ClaimsPrincipal user) =>
-            Results.Ok(await svc.LogWaterAsync(GetUserId(user), request)));
+        group.MapPost("/water", async (LogWaterRequest request, IHydrationService svc, System.Security.Claims.ClaimsPrincipal user) =>
+            Results.Ok(await svc.LogWaterAsync(user.GetUserId(), request)));
 
-        group.MapGet("/water/summary", async (DateOnly? date, IHydrationService svc, ClaimsPrincipal user) =>
-            Results.Ok(await svc.GetDailySummaryAsync(GetUserId(user), date ?? DateOnly.FromDateTime(DateTime.UtcNow))));
+        group.MapGet("/water/summary", async (DateOnly? date, IHydrationService svc, System.Security.Claims.ClaimsPrincipal user) =>
+            Results.Ok(await svc.GetDailySummaryAsync(user.GetUserId(), date ?? DateOnly.FromDateTime(DateTime.UtcNow))));
 
-        group.MapPost("/reminders", async (SetReminderRequest request, IHydrationService svc, ClaimsPrincipal user) =>
-            Results.Ok(await svc.SetReminderAsync(GetUserId(user), request)));
+        group.MapPost("/reminders", async (SetReminderRequest request, IHydrationService svc, System.Security.Claims.ClaimsPrincipal user) =>
+            Results.Ok(await svc.SetReminderAsync(user.GetUserId(), request)));
 
-        group.MapPatch("/reminders/{id:int}", async (int id, bool active, IHydrationService svc, ClaimsPrincipal user) =>
-            Results.Ok(await svc.ToggleReminderAsync(GetUserId(user), id, active)));
+        group.MapPatch("/reminders/{id:int}", async (int id, bool active, IHydrationService svc, System.Security.Claims.ClaimsPrincipal user) =>
+            Results.Ok(await svc.ToggleReminderAsync(user.GetUserId(), id, active)));
     }
-
-    private static int GetUserId(ClaimsPrincipal user) =>
-        int.Parse(user.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier)!);
 }

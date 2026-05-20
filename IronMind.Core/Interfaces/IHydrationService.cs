@@ -7,5 +7,5 @@ public interface IHydrationService
     Task<WaterLogDto> LogWaterAsync(int userId, LogWaterRequest request);
     Task<WaterSummaryDto> GetDailySummaryAsync(int userId, DateOnly date);
     Task<ReminderScheduleDto> SetReminderAsync(int userId, SetReminderRequest request);
-    Task<bool> ToggleReminderAsync(int userId, int reminderId, bool isActive);
+    Task<ReminderScheduleDto> ToggleReminderAsync(int userId, int reminderId, bool isActive);
 }

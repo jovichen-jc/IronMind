@@ -12,12 +12,16 @@ public class FcmNotificationService : INotificationService
     {
         if (FirebaseApp.DefaultInstance is not null) return;
 
-        var path = config["Firebase:ServiceAccountPath"]
-            ?? throw new InvalidOperationException("Firebase:ServiceAccountPath not set in config.");
+        // Production (ECS): inject FIREBASE_SERVICE_ACCOUNT_JSON from AWS Secrets Manager
+        // Local dev: set Firebase:ServiceAccountJson in appsettings.Development.json
+        var json = config["Firebase:ServiceAccountJson"]
+            ?? throw new InvalidOperationException(
+                "Firebase:ServiceAccountJson is not configured. " +
+                "Set it via the FIREBASE__SERVICE_ACCOUNT_JSON environment variable or appsettings.Development.json.");
 
         FirebaseApp.Create(new AppOptions
         {
-            Credential = GoogleCredential.FromFile(path)
+            Credential = GoogleCredential.FromJson(json)
         });
     }
 

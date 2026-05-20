@@ -44,14 +44,14 @@ public class HydrationService(AppDbContext db) : IHydrationService
         return ToDto(reminder);
     }
 
-    public async Task<bool> ToggleReminderAsync(int userId, int reminderId, bool isActive)
+    public async Task<ReminderScheduleDto> ToggleReminderAsync(int userId, int reminderId, bool isActive)
     {
         var reminder = await db.ReminderSchedules
             .SingleOrDefaultAsync(r => r.Id == reminderId && r.UserId == userId)
             ?? throw new KeyNotFoundException("Reminder not found.");
         reminder.IsActive = isActive;
         await db.SaveChangesAsync();
-        return reminder.IsActive;
+        return ToDto(reminder);
     }
 
     private static ReminderScheduleDto ToDto(ReminderSchedule r) =>

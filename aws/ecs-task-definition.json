@@ -1,0 +1,69 @@
+{
+  "family": "ironmind-api",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::481088927864:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::481088927864:role/ecsTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "ironmind-api",
+      "image": "481088927864.dkr.ecr.ca-central-1.amazonaws.com/ironmind/api:latest",
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "environment": [
+        {
+          "name": "ASPNETCORE_ENVIRONMENT",
+          "value": "Production"
+        },
+        {
+          "name": "ASPNETCORE_URLS",
+          "value": "http://+:8080"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "ConnectionStrings__Default",
+          "valueFrom": "arn:aws:secretsmanager:ca-central-1:481088927864:secret:ironmind/db-connection-string"
+        },
+        {
+          "name": "Jwt__Secret",
+          "valueFrom": "arn:aws:secretsmanager:ca-central-1:481088927864:secret:ironmind/jwt-secret"
+        },
+        {
+          "name": "Jwt__Issuer",
+          "valueFrom": "arn:aws:secretsmanager:ca-central-1:481088927864:secret:ironmind/jwt-issuer"
+        },
+        {
+          "name": "Jwt__Audience",
+          "valueFrom": "arn:aws:secretsmanager:ca-central-1:481088927864:secret:ironmind/jwt-audience"
+        },
+        {
+          "name": "Firebase__ServiceAccountJson",
+          "valueFrom": "arn:aws:secretsmanager:ca-central-1:481088927864:secret:ironmind/firebase-service-account"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ironmind-api",
+          "awslogs-region": "ca-central-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 10
+      }
+    }
+  ]
+}

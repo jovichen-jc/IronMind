@@ -1,0 +1,216 @@
+
+<style>
+#cd3 { padding: 0.5rem 0; }
+#cd3 svg { max-width: 100%; }
+</style>
+<div id="cd3"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '12px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#888780',
+    textColor: dark ? '#c2c0b6' : '#2C2C2A',
+    primaryColor: dark ? '#3C3489' : '#EEEDFE',
+    primaryTextColor: dark ? '#CECBF6' : '#26215C',
+    primaryBorderColor: dark ? '#7F77DD' : '#534AB7',
+    secondaryColor: dark ? '#085041' : '#E1F5EE',
+    secondaryTextColor: dark ? '#9FE1CB' : '#04342C',
+    secondaryBorderColor: dark ? '#1D9E75' : '#0F6E56',
+    tertiaryColor: dark ? '#412402' : '#FAEEDA',
+    tertiaryTextColor: dark ? '#FAC775' : '#412402',
+    tertiaryBorderColor: dark ? '#BA7517' : '#854F0B',
+    noteBkgColor: dark ? '#444441' : '#F1EFE8',
+    noteTextColor: dark ? '#D3D1C7' : '#2C2C2A',
+  },
+});
+
+const diagram = `classDiagram
+  class User {
+    +int Id
+    +string Username
+    +string Email
+    +string PasswordHash
+    +DateTime CreatedAt
+    +List~MealLog~ MealLogs
+    +List~WaterLog~ WaterLogs
+    +List~WaterReminder~ WaterReminders
+    +List~CardioLog~ CardioLogs
+    +List~StrengthLog~ StrengthLogs
+  }
+
+  class MealLog {
+    +int Id
+    +int UserId
+    +string FoodName
+    +string MealType
+    +double Calories
+    +double ProteinG
+    +double CarbsG
+    +double FatG
+    +double ServingG
+    +DateTime LoggedAt
+  }
+
+  class WaterLog {
+    +int Id
+    +int UserId
+    +double AmountMl
+    +DateTime LoggedAt
+  }
+
+  class WaterReminder {
+    +int Id
+    +int UserId
+    +TimeOnly ReminderTime
+    +string Label
+    +bool IsActive
+  }
+
+  class CardioLog {
+    +int Id
+    +int UserId
+    +string ActivityType
+    +int DurationMin
+    +double DistanceKm
+    +double CaloriesBurned
+    +DateTime LoggedAt
+  }
+
+  class StrengthLog {
+    +int Id
+    +int UserId
+    +string ExerciseName
+    +string MuscleGroup
+    +int Sets
+    +int Reps
+    +double WeightKg
+    +string Notes
+    +DateTime LoggedAt
+  }
+
+  class IAuthService {
+    <<interface>>
+    +RegisterAsync(RegisterRequest) AuthResponse
+    +LoginAsync(LoginRequest) AuthResponse
+  }
+
+  class INutritionService {
+    <<interface>>
+    +LogMealAsync(int userId, LogMealRequest) MealLogResponse
+    +GetDailySummaryAsync(int userId, DateTime) DailySummaryResponse
+    +GetMealLogsAsync(int userId, DateTime) List~MealLogResponse~
+    +DeleteMealLogAsync(int userId, int id) void
+  }
+
+  class IHydrationService {
+    <<interface>>
+    +LogWaterAsync(int userId, LogWaterRequest) WaterLog
+    +GetDailySummaryAsync(int userId, DateTime) HydrationSummaryResponse
+    +SetReminderAsync(int userId, SetReminderRequest) ReminderResponse
+    +ToggleReminderAsync(int userId, int id) ReminderResponse
+  }
+
+  class IExerciseService {
+    <<interface>>
+    +LogCardioAsync(int userId, LogCardioRequest) CardioLogResponse
+    +LogStrengthAsync(int userId, LogStrengthRequest) StrengthLogResponse
+    +GetHistoryAsync(int userId, DateTime) tuple
+    +DeleteWorkoutLogAsync(int userId, int id, string type) void
+  }
+
+  class AuthService {
+    -AppDbContext _db
+    -IConfiguration _config
+    +RegisterAsync(RegisterRequest) AuthResponse
+    +LoginAsync(LoginRequest) AuthResponse
+    -GenerateJwt(User) string
+  }
+
+  class NutritionService {
+    -AppDbContext _db
+    +LogMealAsync(int userId, LogMealRequest) MealLogResponse
+    +GetDailySummaryAsync(int userId, DateTime) DailySummaryResponse
+    +GetMealLogsAsync(int userId, DateTime) List~MealLogResponse~
+    +DeleteMealLogAsync(int userId, int id) void
+    -MapToResponse(MealLog) MealLogResponse
+  }
+
+  class HydrationService {
+    -AppDbContext _db
+    +LogWaterAsync(int userId, LogWaterRequest) WaterLog
+    +GetDailySummaryAsync(int userId, DateTime) HydrationSummaryResponse
+    +SetReminderAsync(int userId, SetReminderRequest) ReminderResponse
+    +ToggleReminderAsync(int userId, int id) ReminderResponse
+    -MapReminderToResponse(WaterReminder) ReminderResponse
+  }
+
+  class ExerciseService {
+    -AppDbContext _db
+    +LogCardioAsync(int userId, LogCardioRequest) CardioLogResponse
+    +LogStrengthAsync(int userId, LogStrengthRequest) StrengthLogResponse
+    +GetHistoryAsync(int userId, DateTime) tuple
+    +DeleteWorkoutLogAsync(int userId, int id, string type) void
+    -MapCardioToResponse(CardioLog) CardioLogResponse
+    -MapStrengthToResponse(StrengthLog) StrengthLogResponse
+  }
+
+  class AppDbContext {
+    +DbSet~User~ Users
+    +DbSet~MealLog~ MealLogs
+    +DbSet~WaterLog~ WaterLogs
+    +DbSet~WaterReminder~ WaterReminders
+    +DbSet~CardioLog~ CardioLogs
+    +DbSet~StrengthLog~ StrengthLogs
+    +OnModelCreating(ModelBuilder) void
+  }
+
+  User "1" --> "0..*" MealLog : has
+  User "1" --> "0..*" WaterLog : has
+  User "1" --> "0..*" WaterReminder : has
+  User "1" --> "0..*" CardioLog : has
+  User "1" --> "0..*" StrengthLog : has
+
+  AuthService ..|> IAuthService : implements
+  NutritionService ..|> INutritionService : implements
+  HydrationService ..|> IHydrationService : implements
+  ExerciseService ..|> IExerciseService : implements
+
+  AuthService --> AppDbContext : uses
+  NutritionService --> AppDbContext : uses
+  HydrationService --> AppDbContext : uses
+  ExerciseService --> AppDbContext : uses
+
+  AppDbContext --> User : tracks
+  AppDbContext --> MealLog : tracks
+  AppDbContext --> WaterLog : tracks
+  AppDbContext --> WaterReminder : tracks
+  AppDbContext --> CardioLog : tracks
+  AppDbContext --> StrengthLog : tracks
+`;
+
+const { svg } = await mermaid.render('cd3-svg', diagram);
+document.getElementById('cd3').innerHTML = svg;
+
+document.querySelectorAll('#cd3 svg .node').forEach(node => {
+  const fp = node.querySelector('path[d]');
+  if (!fp) return;
+  const nums = fp.getAttribute('d').match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0],nums[2],nums[4],nums[6]], ys = [nums[1],nums[3],nums[5],nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys), w = Math.max(...xs)-x, h = Math.max(...ys)-y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  rect.setAttribute('x',x); rect.setAttribute('y',y);
+  rect.setAttribute('width',w); rect.setAttribute('height',h); rect.setAttribute('rx','8');
+  for (const a of ['fill','stroke','stroke-width','class','style'])
+    if (fp.hasAttribute(a)) rect.setAttribute(a, fp.getAttribute(a));
+  fp.replaceWith(rect);
+});
+</script>

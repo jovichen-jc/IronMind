@@ -49,6 +49,21 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseExceptionHandler(errApp => errApp.Run(async ctx =>
+{
+    var ex = ctx.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>()?.Error;
+    var (status, message) = ex switch
+    {
+        KeyNotFoundException => (StatusCodes.Status404NotFound, ex.Message),
+        UnauthorizedAccessException => (StatusCodes.Status403Forbidden, ex.Message),
+        _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
+    };
+    ctx.Response.StatusCode = status;
+    await ctx.Response.WriteAsJsonAsync(new { error = message });
+}));
+
+app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
+
 app.UseAuthentication();
 app.UseAuthorization();
 
