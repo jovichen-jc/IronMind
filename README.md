@@ -118,7 +118,7 @@ dotnet ef database update --project IronMind.Data --startup-project IronMind.API
 dotnet run --project IronMind.API
 ```
 
-API available at `http://localhost:8080` — Swagger UI at `http://localhost:8080/swagger`
+API available at `http://localhost:5235` — Swagger UI at `http://localhost:5235/swagger`
 
 ---
 
@@ -170,8 +170,8 @@ IronMind/
 ├── IronMind.Tests/
 └── docs/
     ├── planning.md
-    ├── db_setup_guide.md
-    └── New Reports/
+    ├── ports.md
+    └── deployment_report.md
 ```
 
 ---
